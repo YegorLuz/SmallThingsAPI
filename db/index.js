@@ -2,12 +2,16 @@ const mysql = require('mysql');
 
 let db = null;
 let initialized = false;
-const queryCallback = (error, result, fields) => {
-    if (error) {
-        console.log(error);
-    }
-    console.log(result);
-    return result;
+
+const query = (sql) => {
+    return new Promise((resolve, reject) => {
+        db.query(sql, (error, result, fields) => {
+            if (error) {
+                reject(error);
+            }
+            resolve(result);
+        });
+    });
 };
 
 class DataBase {
@@ -29,22 +33,22 @@ class DataBase {
 
 
     /** ----- CATEGORIES ----- */
-    static async getCategories (params = {}) {
+    static getCategories (params = {}) {
         const { store_id, category_id = null } = params;
 
         if (!!store_id && !category_id) {
-            return db.query(`SELECT * FROM categories WHERE category_id IN (SELECT DISTINCT(category_id) AS category_id FROM products WHERE store_id=${store_id})`, queryCallback);
+            return query(`SELECT * FROM categories WHERE category_id IN (SELECT DISTINCT(category_id) AS category_id FROM products WHERE store_id=${store_id})`);
         }
 
         if (category_id) {
-            return db.query(`SELECT * FROM categories WHERE category_id=${category_id}`, queryCallback);
+            return query(`SELECT * FROM categories WHERE category_id=${category_id}`);
         }
 
-        return db.query('SELECT * FROM categories', queryCallback);
+        return query(`SELECT * FROM categories`);
     }
 
-    static async getCategory (category_id) {
-        return db.query(`SELECT * FROM categories WHERE category_id=${category_id}`, queryCallback);
+    static getCategory (category_id) {
+        return query(`SELECT * FROM categories WHERE category_id=${category_id}`);
     }
 
     static async addCategory (data = {}) {
@@ -59,18 +63,18 @@ class DataBase {
 
 
     /** ----- COLORS ----- */
-    static async getColors (params = {}) {
+    static getColors (params = {}) {
         const { color_id } = params;
 
         if (color_id) {
-            return db.query(`SELECT * FROM colors WHERE color_id=${color_id}`, queryCallback);
+            return query(`SELECT * FROM colors WHERE color_id=${color_id}`);
         }
 
-        return db.query(`SELECT * FROM colors`);
+        return query(`SELECT * FROM colors`);
     }
 
-    static async getColor (color_id) {
-        return db.query(`SELECT * FROM colors WHERE color_id=${color_id}`, queryCallback);
+    static getColor (color_id) {
+        return query(`SELECT * FROM colors WHERE color_id=${color_id}`);
     }
 
     static async addColor (data = {}) {
@@ -85,16 +89,16 @@ class DataBase {
 
 
     /** ----- COMPANIES ----- */
-    static async getCompanies (params = {}) {
-        return db.query(`SELECT * FROM companies`, queryCallback);
+    static getCompanies (params = {}) {
+        return query(`SELECT * FROM companies`);
     }
 
-    static async getCompany (company_id) {
-        return db.query(`SELECT * FROM companies WHERE company_id=${company_id}`, queryCallback);
+    static getCompany (company_id) {
+        return query(`SELECT * FROM companies WHERE company_id=${company_id}`);
     }
 
-    static async getCompanyByStoreId (store_id) {
-        return db.query(`SELECT * FROM companies WHERE company_id IN (SELECT DISTINCT(company_id) AS company_id FROM stores WHERE store_id=${store_id})`, queryCallback);
+    static getCompanyByStoreId (store_id) {
+        return query(`SELECT * FROM companies WHERE company_id IN (SELECT DISTINCT(company_id) AS company_id FROM stores WHERE store_id=${store_id})`);
     }
 
     static async addCompany (data = {}) {
@@ -109,12 +113,12 @@ class DataBase {
 
 
     /** ----- DELIVERY TYPES ----- */
-    static async getDeliveryTypes (params = {}) {
-        return db.query(`SELECT * FROM delivery_types`, queryCallback);
+    static getDeliveryTypes (params = {}) {
+        return query(`SELECT * FROM delivery_types`);
     }
 
-    static async getDeliveryType (delivery_type_id) {
-        return db.query(`SELECT * FROM delivery_types WHERE delivery_type_id=${delivery_type_id}`, queryCallback);
+    static getDeliveryType (delivery_type_id) {
+        return query(`SELECT * FROM delivery_types WHERE delivery_type_id=${delivery_type_id}`);
     }
 
     static async addDeliveryType (data = {}) {
@@ -129,12 +133,12 @@ class DataBase {
 
 
     /** ----- ORDERS ----- */
-    static async getOrders (params = {}) {
-        return db.query(`SELECT * FROM orders`, queryCallback);
+    static getOrders (params = {}) {
+        return query(`SELECT * FROM orders`);
     }
 
-    static async getOrder (order_id) {
-        return db.query(`SELECT * FROM orders WHERE order_id=${order_id}`, queryCallback);
+    static getOrder (order_id) {
+        return query(`SELECT * FROM orders WHERE order_id=${order_id}`);
     }
 
     static async addOrder (data = {}) {
@@ -149,16 +153,16 @@ class DataBase {
 
 
     /** ----- PRODUCTS ----- */
-    static async getProducts (params = {}) {
-        return db.query(`SELECT * FROM products`, queryCallback);
+    static getProducts (params = {}) {
+        return query(`SELECT * FROM products`);
     }
 
-    static async getProduct (product_id) {
-        return db.query(`SELECT * FROM products WHERE product_id=${product_id}`, queryCallback);
+    static getProduct (product_id) {
+        return query(`SELECT * FROM products WHERE product_id=${product_id}`);
     }
 
-    static async getRecommendedProducts () {
-        return Product.find({});
+    static getRecommendedProducts () {
+        return query(`SELECT * FROM products`);
     }
 
     static async addProduct (data = {}) {
@@ -173,12 +177,12 @@ class DataBase {
 
 
     /** ----- SIZES ----- */
-    static async getSizes (params = {}) {
-        return db.query(`SELECT * FROM sizes`, queryCallback);
+    static getSizes (params = {}) {
+        return query(`SELECT * FROM sizes`);
     }
 
-    static async getSize (size_id) {
-        return db.query(`SELECT * FROM sizes WHERE size_id=${size_id}`, queryCallback);
+    static getSize (size_id) {
+        return query(`SELECT * FROM sizes WHERE size_id=${size_id}`);
     }
 
     static async addSize (data = {}) {
@@ -193,12 +197,12 @@ class DataBase {
 
 
     /** ----- STORES ----- */
-    static async getStores (params = {}) {
-        return db.query(`SELECT * FROM stores`, queryCallback);
+    static getStores (params = {}) {
+        return query(`SELECT * FROM stores`);
     }
 
-    static async getStore (store_id) {
-        return db.query(`SELECT * FROM stores WHERE store_id=${store_id}`, queryCallback);
+    static getStore (store_id) {
+        return query(`SELECT * FROM stores WHERE store_id=${store_id}`);
     }
 
     static async addStore (data = {}) {
@@ -213,12 +217,12 @@ class DataBase {
 
 
     /** ----- TRANSPORTERS ----- */
-    static async getTransporters (params = {}) {
-        return db.query(`SELECT * FROM transporters`, queryCallback);
+    static getTransporters (params = {}) {
+        return query(`SELECT * FROM transporters`);
     }
 
-    static async getTransporter (transporter_id) {
-        return db.query(`SELECT * FROM transporters WHERE transporter_id=${transporter_id}`, queryCallback);
+    static getTransporter (transporter_id) {
+        return query(`SELECT * FROM transporters WHERE transporter_id=${transporter_id}`);
     }
 
     static async addTransporter (data = {}) {
@@ -233,16 +237,16 @@ class DataBase {
 
 
     /** ----- USERS ----- */
-    static async getUsers (params = {}) {
-        return db.query(`SELECT * FROM users`, queryCallback);
+    static getUsers (params = {}) {
+        return query(`SELECT * FROM users`);
     }
 
-    static async getUser (user_id) {
-        return db.query(`SELECT * FROM users WHERE user_id=${user_id}`, queryCallback);
+    static getUser (user_id) {
+        return query(`SELECT * FROM users WHERE user_id=${user_id}`);
     }
 
-    static async getUserByCreds (email, password) {
-        return db.query(`SELECT * FROM users WHERE email=${email} AND password=${password}`, queryCallback);
+    static getUserByCreds (email, password) {
+        return query(`SELECT * FROM users WHERE email=${email} AND password=${password}`);
     }
 
     static async addUser (data) {
@@ -257,12 +261,12 @@ class DataBase {
 
 
     /** ----- USER TYPES ----- */
-    static async getUserTypes (params = {}) {
-        return db.query(`SELECT * FROM user_types`, queryCallback);
+    static getUserTypes (params = {}) {
+        return query(`SELECT * FROM user_types`);
     }
 
-    static async getUserType (user_type_id) {
-        return db.query(`SELECT * FROM user_types WHERE user_type_id=${user_type_id}`, queryCallback);
+    static getUserType (user_type_id) {
+        return query(`SELECT * FROM user_types WHERE user_type_id=${user_type_id}`);
     }
 
     static async addUserType (data = {}) {
@@ -277,13 +281,13 @@ class DataBase {
 
 
     /** ----- STORE ----- */
-    static async getStoreList ({ categoryId, searchValue = '' }) {
+    static getStoreList ({ categoryId, searchValue = '' }) {
         let additionalQuery = '';
         if (categoryId) {
             additionalQuery = `store_id IN (SELECT DISTINCT(store_id) AS store_id FROM products WHERE category_id=${categoryId}) AND`;
         }
 
-        return db.query(`SELECT
+        return query(`SELECT
             stores.address AS store_address,
             companies.name AS company_name,
             companies.slogan AS company_slogan,
@@ -292,7 +296,7 @@ class DataBase {
             companies.banner AS company_banner,
             companies.color_scheme
             FROM stores LEFT JOIN companies ON stores.company_id = companies.company_id
-            WHERE ${additionalQuery} (stores.address LIKE '%${searchValue}%' OR companies.name LIKE '%${searchValue}%')`, queryCallback);
+            WHERE ${additionalQuery} (stores.address LIKE '%${searchValue}%' OR companies.name LIKE '%${searchValue}%')`);
     }
 
 
@@ -306,12 +310,12 @@ class DataBase {
 
 
     /** ----- PAGES ----- */
-    static async getPages (params = {}) {
-        return db.query(`SELECT * FROM pages`, queryCallback);
+    static getPages (params = {}) {
+        return query(`SELECT * FROM pages`);
     }
 
-    static async getPage (page_id) {
-        return db.query(`SELECT * FROM pages WHERE page_id=${page_id}`, queryCallback);
+    static getPage (page_id) {
+        return query(`SELECT * FROM pages WHERE page_id=${page_id}`);
     }
 
     static async addPage (data = {}) {

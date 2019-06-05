@@ -28,7 +28,8 @@ const homePageHandler = function (DataBase) {
 
             response.send(withLoggedIn({ pages, categories, colorPalette: colors, companyInfo, loggedIn }, request));
         } catch (error) {
-            response.status(404).end(error);
+            console.log(error);
+            response.status(404).end('error');
         }
     };
 };
@@ -80,14 +81,14 @@ const categoryPageHandler = function (DataBase) {
             }
 
             if (storeId) {
-                catParams.store = storeId;
-                prodParams.store = storeId;
+                catParams.store_id = storeId;
+                prodParams.store_id = storeId;
             }
 
-            if (categoryId) prodParams.category = categoryId;
+            if (categoryId) prodParams.category_id = categoryId;
 
             const categoriesData = await DataBase.getCategories(catParams);
-            const categories = (categoriesData || []).map(cat => cat.category);
+            const categories = (categoriesData || []).map(cat => cat.category_id);
             const products = await DataBase.getProducts(prodParams);
             const storeInfo = await DataBase.getCompanyByStoreId(storeId);
             const companyInfo = (storeInfo[0] || {}).company;
@@ -129,7 +130,7 @@ const productPageHandler = function (DataBase) {
             }
 
             const productData = await DataBase.getProduct(productId);
-            const { category: categoryId, store: storeId } = (productData || [{}])[0];
+            const { category_id: categoryId, store_id: storeId } = (productData || [{}])[0];
             const categoryData = await DataBase.getCategory(categoryId);
             const storeData = await DataBase.getStore(storeId);
             const storeInfo = await DataBase.getCompanyByStoreId(storeId);
