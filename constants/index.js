@@ -1,0 +1,16 @@
+const TOKEN_LIFE_TIME = 1000 * 15 * 60; // 15 min
+const TOKEN_SECRET = '1597534862';
+const TOKEN_HEADER = {
+    "alg": "HS256",
+    "typ": "JWT"
+};
+const AUTH_DATA_SECRET = 'q3GP7UpC45!_9jaS';
+const UPC_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiJ1cGNfYXBpa2V5In0';
+const UPC_SIMPLE_ACCESS_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1cGM3NWczNTJhIiwibmFtZSI6IlNtYXJ0IEtleSIsImlhdCI6MTUxNjIzOTAyMn0.iMJM6oicExkCG8N-OM7z6bsjNAbK24WwjygR_FTaC4c';
+
+const AVAILABLE_URIS = [
+    '/api/auth',
+    '/api/registration',
+];
+
+module.exports = { TOKEN_LIFE_TIME, TOKEN_SECRET, TOKEN_HEADER, UPC_API_KEY, UPC_SIMPLE_ACCESS_KEY, AUTH_DATA_SECRET, AVAILABLE_URIS };
